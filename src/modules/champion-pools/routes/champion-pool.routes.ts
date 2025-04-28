@@ -1,0 +1,16 @@
+import { Router } from "express";
+import { ChampionPoolController } from "../controllers/ChampionPoolController.js";
+import { authMiddleware } from "../../../middlewares/auth.js";
+
+const championPoolRoutes = Router();
+const championPoolController = new ChampionPoolController();
+
+championPoolRoutes.use(authMiddleware);
+
+championPoolRoutes.get("/", championPoolController.getChampionPool);
+championPoolRoutes.get("/:roleId", championPoolController.getChampionPoolByRole);
+championPoolRoutes.post("/", championPoolController.addChampion);
+championPoolRoutes.put("/", championPoolController.updateChampion);
+championPoolRoutes.delete("/:championId/:roleId", championPoolController.removeChampion);
+
+export { championPoolRoutes };

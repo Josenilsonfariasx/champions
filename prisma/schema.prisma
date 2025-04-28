@@ -1,0 +1,58 @@
+// @ts-nocheck
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Team {
+  id        String   @id @default(uuid())
+  name      String
+  tag       String   @unique
+  logo      String?
+  email     String   @unique
+  password  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  championPools ChampionPool[]
+}
+
+model Champion {
+  id          String   @id @default(uuid())
+  name        String   @unique
+  imageUrl    String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  championPools ChampionPool[]
+}
+
+model Role {
+  id          String   @id @default(uuid())
+  name        String   @unique
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  championPools ChampionPool[]
+}
+
+model ChampionPool {
+  id            String   @id @default(uuid())
+  proficiency   Int      @default(1)
+  notes         String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  team      Team     @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  teamId    String
+  champion  Champion @relation(fields: [championId], references: [id], onDelete: Cascade)
+  championId String
+  role      Role     @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  roleId    String
+
+  @@unique([teamId, championId, roleId])
+} 
